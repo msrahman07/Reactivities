@@ -1,16 +1,12 @@
+import { observer } from 'mobx-react-lite';
 import React, { ChangeEvent, useState } from 'react'
 import { Button, Form, FormGroup, Segment } from 'semantic-ui-react'
 import { Activity } from '../../../app/models/activity';
+import { useStore } from '../../../app/stores/store';
 
-interface IProps {
-  activity: Activity | undefined;
-  closeForm: () => void;
-  createOrEdit: (activity: Activity) => void;
-  submitting: boolean;
-}
-
-const ActivityForm = ({activity: selectedActivity, closeForm, createOrEdit, submitting}: IProps) => {
-
+const ActivityForm = () => {
+  const {activityStore} = useStore();
+  const {selectedActivity, closeForm, createActivity, updateActivity, loading} = activityStore;
   const initialState = selectedActivity ?? {
     id: "",
     title: "",
@@ -23,7 +19,7 @@ const ActivityForm = ({activity: selectedActivity, closeForm, createOrEdit, subm
   const [activity, setActivity] = useState(initialState)
 
   const handleSubmit = () => {
-    createOrEdit(activity);
+    activity.id ? updateActivity(activity) : createActivity(activity);
   }
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -40,7 +36,7 @@ const ActivityForm = ({activity: selectedActivity, closeForm, createOrEdit, subm
             <Form.Input type='date' placeholder="Date" value={activity.date} name='date' onChange={handleInputChange}/>
             <Form.Input placeholder="City" value={activity.city} name='city' onChange={handleInputChange}/>
             <Form.Input placeholder="Venue" value={activity.venue} name='venue' onChange={handleInputChange}/>
-            <Button loading={submitting} floated='right' positive type='submit' content='Submit' onChange={handleInputChange}/>
+            <Button loading={loading} floated='right' positive type='submit' content='Submit' onChange={handleInputChange}/>
             <Button onClick={closeForm} floated='right' type='button' content='Cancel' onChange={handleInputChange}/>
         </Form>
     </Segment>
@@ -48,4 +44,4 @@ const ActivityForm = ({activity: selectedActivity, closeForm, createOrEdit, subm
   )
 }
 
-export default ActivityForm
+export default observer(ActivityForm)
