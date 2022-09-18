@@ -3,12 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using MediatR;
 using Application.Activities;
 using Application.Cores;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddFluentValidationAutoValidation();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");

@@ -1,10 +1,9 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../api/agent";
 import { Activity } from "../models/activity";
-import {v4 as uuid} from 'uuid';
 
 export default class ActivityStore {
-    activityRegistry = new Map<string, Activity>
+    activityRegistry = new Map<string, Activity>();
     selectedActivity: Activity | undefined = undefined;
     editMode = false;
     loading = false;
@@ -20,9 +19,18 @@ export default class ActivityStore {
         ))
     }
 
+    get groupedActivities() {
+        return Object.entries(
+            this.activitiesByDate.reduce((activities, activity) => {
+                const date = activity.date;
+                activities[date] = activities[date] ? [...activities[date], activity] : [activity];
+                return activities;
+            }, {} as {[key: string]: Activity[]})
+        )
+    }
+
     loadActivities = async () => {
         this.setLoadingInitial(true);
-
         try {
             const activities = await agent.Activities.list();
             activities.forEach(activity => {
@@ -70,7 +78,6 @@ export default class ActivityStore {
 
     createActivity = async (activity: Activity) => {
         this.loading = true;
-        activity.id = uuid();
         try {
             await agent.Activities.create(activity);
             runInAction(() => {
