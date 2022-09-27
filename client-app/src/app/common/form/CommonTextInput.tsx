@@ -7,6 +7,7 @@ interface IProps {
     placeholder: string;
     name: string;
     label?: string;
+    type?: string;
 }
 
 const CommonTextInput = (props:IProps) => {
