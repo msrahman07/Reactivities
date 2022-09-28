@@ -21,5 +21,16 @@ namespace Persistence
             optionsBuilder.UseSqlite(connectionString);
         }
         public DbSet<Activity> Activities { get; set; } = null!;
+        public DbSet<ActivityAttendee> ActivityAttendees { get; set; } = null!;
+        protected override async void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<ActivityAttendee>(x => x.HasKey(aa => new {aa.AppUserId, aa.ActivityId}));
+            builder.Entity<ActivityAttendee>()
+                .HasOne(u => u.AppUser)
+                .WithMany(a => a.Activities)
+                .HasForeignKey(aa => aa.AppUserId);
+        }
     }
 }

@@ -2,7 +2,7 @@ import { error } from 'console'
 import { ErrorMessage, Form, Formik } from 'formik'
 import { observer } from 'mobx-react-lite'
 import React from 'react'
-import { Button, Label } from 'semantic-ui-react'
+import { Button, Header, Label } from 'semantic-ui-react'
 import CommonTextInput from '../../app/common/form/CommonTextInput'
 import { useStore } from '../../app/stores/store'
 
@@ -15,6 +15,7 @@ const LoginForm = () => {
     >
         {({handleSubmit, isSubmitting, errors}) => (
             <Form className='ui form' onSubmit={handleSubmit}>
+                <Header as='h2' content='Login to Reactivities' color='teal' textAlign='center' />
                 <CommonTextInput name='email' placeholder='email'/>
                 <CommonTextInput name='password' placeholder='password' type='password'/>
                 <ErrorMessage 

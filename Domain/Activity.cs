@@ -19,5 +19,6 @@ namespace Domain
         public string City { get; set; } = null!;
 
         public string Venue { get; set; }  = null!;
+        public ICollection<AppUser> Attendees { get; set; } = null!;
     }
 }
