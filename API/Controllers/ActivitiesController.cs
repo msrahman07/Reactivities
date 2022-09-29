@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
-    [AllowAnonymous]
     public class ActivitiesController : BaseApiController
     {
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<List<Activity>>> GetActivities()
         {
@@ -27,15 +27,23 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new Create.Command{Activity = activity}));
         }
 
+        [Authorize(Policy = "IsActivityHost")]
         [HttpPut("{id}")] // update activity by id. /activities/id
         public async Task<IActionResult> UpdateActivity(Guid id, Activity activity){
             activity.Id = id;
             return HandleResult(await Mediator.Send(new Edit.Command{Activity = activity}));
         }
-
+        
+        [Authorize(Policy = "IsActivityHost")]
         [HttpDelete("{id}")] // delete activity by id. /activities/id
         public async Task<IActionResult> DeleteActivity(Guid id){
             return HandleResult(await Mediator.Send(new Delete.Command{Id = id}));
+        }
+
+        [HttpPost("{id}/attend")] // attend activity]
+        public async Task<IActionResult> Attend(Guid id)
+        {
+            return HandleResult(await Mediator.Send(new UpdateAttendance.Command {Id = id}));
         }
     }
 }

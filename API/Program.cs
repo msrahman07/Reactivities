@@ -13,6 +13,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Application.Interfaces;
+using Infrastructure.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,6 +64,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false,
         };
     });
+builder.Services.AddAuthorization(opt =>
+{
+    opt.AddPolicy("IsActivityHost", policy =>
+    {
+        policy.Requirements.Add(new IsHostRequirement());
+    });
+});
+builder.Services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>();
 builder.Services.AddScoped<TokenService>();
 //Identity service ===============================
 //=================================================
@@ -69,7 +79,7 @@ builder.Services.AddScoped<TokenService>();
 builder.Services.AddMediatR(typeof(List.Handler).Assembly);
 //adding automapper
 builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
-
+builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 var app = builder.Build();
 app.UseMiddleware<ExceptionMiddleware>();
 // Configure the HTTP request pipeline.

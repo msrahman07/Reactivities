@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Profiles;
 
-namespace Domain
+namespace Application.Activities
 {
-    public class Activity
+    public class ActivityDto
     {
         public Guid Id { get; set; }
         public string Title { get; set; } = null!;
@@ -19,7 +20,8 @@ namespace Domain
         public string City { get; set; } = null!;
 
         public string Venue { get; set; }  = null!;
+        public string HostUsername { get; set; }  = null!;
         public bool IsCancelled { get; set; }
-        public ICollection<ActivityAttendee> Attendees { get; set; } = new List<ActivityAttendee>();
+        public ICollection<Profile> Attendees { get; set; }  = null!;
     }
 }
