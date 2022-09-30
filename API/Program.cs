@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Application.Interfaces;
 using Infrastructure.Security;
+using Infrastructure.Photos;
+using Application.Photos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,6 +82,9 @@ builder.Services.AddMediatR(typeof(List.Handler).Assembly);
 //adding automapper
 builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 builder.Services.AddScoped<IUserAccessor, UserAccessor>();
+builder.Services.AddScoped<IPhotoAccessor, PhotoAccessor>();
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
+
 var app = builder.Build();
 app.UseMiddleware<ExceptionMiddleware>();
 // Configure the HTTP request pipeline.
