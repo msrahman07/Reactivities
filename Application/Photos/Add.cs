@@ -44,8 +44,13 @@ namespace Application.Photos
                 var photo = new Photo
                 {
                     Id = photoUploadResult.PublicId,
-                    Url = photoUploadResult.Url
+                    Url = photoUploadResult.Url,
                 };
+                if(user.Photos.Count == 0)
+                {
+                    photo.IsMain = true;
+                }
+                
                 user.Photos.Add(photo);
                 var result = await context.SaveChangesAsync() > 0;
                 

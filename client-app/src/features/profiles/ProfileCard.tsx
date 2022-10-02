@@ -2,10 +2,10 @@ import { observer } from 'mobx-react-lite';
 import React from 'react'
 import { Link } from 'react-router-dom';
 import { Card, Icon, Image } from 'semantic-ui-react';
-import { IProfile } from '../../app/models/profile'
+import { Profile } from '../../app/models/profile'
 
 interface IProps {
-    profile: IProfile;
+    profile: Profile;
 }
 
 const ProfileCard = ({profile} : IProps) => {

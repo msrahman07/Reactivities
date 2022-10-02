@@ -1,4 +1,4 @@
-import { IProfile } from "./profile";
+import { Profile } from "./profile";
 
 export interface Activity {
     id: string;
@@ -12,8 +12,8 @@ export interface Activity {
     isCalcelled?: boolean;
     isGoing: boolean;
     isHost: boolean;
-    host?: IProfile;
-    attendees: IProfile[];
+    host?: Profile;
+    attendees: Profile[];
 }
 
 export class Activity implements Activity {
