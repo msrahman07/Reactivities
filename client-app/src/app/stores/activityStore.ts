@@ -57,7 +57,7 @@ export default class ActivityStore {
                 a => a.username === user.username
             );
             activity.isHost = activity.hostUsername === user.username;
-            activity.host = activity.attendees?.find(x => x.username === activity.hostUsername);
+            activity.host = activity.attendees?.find(x => x.username === activity.hostUsername)!;
         }
         activity.date = new Date(activity.date!);
         this.activityRegistry.set(activity.id, activity);
@@ -66,24 +66,26 @@ export default class ActivityStore {
     loadActivity = async (id: string) => {
         let activity = this.getActivity(id);
         if(activity){
-            runInAction(() => {
-                this.selectedActivity = activity;
-            })
+            this.selectedActivity = activity;
+            this.setLoadingInitial(false);
             return activity;
         } else {
             this.setLoadingInitial(true);
             try {
                 activity = await agent.Activities.details(id);
+                this.setActivity(activity);
                 runInAction(() => {
                     this.selectedActivity = activity;
-
                 })
-                this.setActivity(activity);
                 this.setLoadingInitial(false);
                 return activity;
             } catch (error) {
                 console.log(error);
                 this.setLoadingInitial(false);
+            } finally {
+                runInAction(() => {
+                    this.setLoadingInitial(false);
+                });
             }
         }
     }
@@ -184,5 +186,9 @@ export default class ActivityStore {
                 this.loading = false;
             });
         }
+    }
+
+    clearSelectedActivity = () => {
+        this.selectedActivity = undefined;
     }
 }

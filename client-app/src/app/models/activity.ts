@@ -12,7 +12,7 @@ export interface Activity {
     isCalcelled?: boolean;
     isGoing: boolean;
     isHost: boolean;
-    host?: Profile;
+    host: Profile;
     attendees: Profile[];
 }
 

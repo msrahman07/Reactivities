@@ -37,7 +37,7 @@ const ActivityListItem = ({ activity }: IProps) => {
                                     </Label>
                                 </Item.Description>
                             )}
-                            {activity.isHost && !activity.isHost && (
+                            {activity.isGoing && !activity.isHost && (
                                 <Item.Description>
                                     <Label basic color='green'>
                                         You are going to this activity
