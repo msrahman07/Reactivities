@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Application.Cores;
 using Application.Interfaces;
 using Domain;
@@ -35,9 +31,9 @@ namespace Application.Followers
 
                 var target = await context.Users.FirstOrDefaultAsync(x => x.UserName == request.TargetUsername);
 
-                if(target == null || observer == null) return null!;
+                if(target == null) return null!;
 
-                var following = await context.UserFollowings.FindAsync(observer.Id, target.Id);
+                var following = await context.UserFollowings.FindAsync(observer!.Id, target.Id);
                 
                 if(following == null) 
                 {
@@ -46,6 +42,7 @@ namespace Application.Followers
                         Observer = observer,
                         Target = target,
                     };
+                    context.UserFollowings.Add(following);
                 }
                 else
                 {
