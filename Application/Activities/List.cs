@@ -10,9 +10,12 @@ namespace Application.Activities
 {
     public class List
     {
-        public class Query : IRequest<Result<List<ActivityDto>>> {}
+        public class Query : IRequest<Result<PagedList<ActivityDto>>> 
+        {
+            public ActivityParams Params { get; set; } = null!;
+        }
 
-        public class Handler : IRequestHandler<Query, Result<List<ActivityDto>>>
+        public class Handler : IRequestHandler<Query, Result<PagedList<ActivityDto>>>
         {
             private readonly DataContext context;
             private readonly IMapper mapper;
@@ -25,12 +28,27 @@ namespace Application.Activities
                 this.userAccessor = userAccessor;
             }
 
-            public async Task<Result<List<ActivityDto>>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<PagedList<ActivityDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var activities = await this.context.Activities
+                var query = context.Activities
+                    .Where(d => d.Date >= request.Params.StartDate)
+                    .OrderBy(d => d.Date)
                     .ProjectTo<ActivityDto>(mapper.ConfigurationProvider, new {currentUsername = userAccessor.GetUsername()})
-                    .ToListAsync();
-                return Result<List<ActivityDto>>.Success(activities);
+                    .AsQueryable();
+                if(request.Params.IsGoing && !request.Params.IsHost)
+                {
+                    query = query.Where(x => x.Attendees.Any(a => a.Username == userAccessor.GetUsername()));
+                }
+
+                if(request.Params.IsHost && !request.Params.IsGoing)
+                {
+                    query = query.Where(x => x.HostUsername == userAccessor.GetUsername());
+                }   
+
+                return Result<PagedList<ActivityDto>>.Success(
+                    await PagedList<ActivityDto>.CreateAsync(query, request.Params.PageNumber,
+                        request.Params.PageSize)
+                );
             }
         }
     }
