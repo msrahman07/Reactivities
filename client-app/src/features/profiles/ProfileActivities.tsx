@@ -22,7 +22,7 @@ const ProfileActivities = () => {
 
     useEffect(() => {
         loadUserActivities(profile!.username);
-    }, [loadUserActivities])
+    }, [loadUserActivities, profile])
 
     const handleTabChange = (e: SyntheticEvent, data: TabProps) => {
         loadUserActivities(profile!.username, panes[data.activeIndex as number].pane.key);

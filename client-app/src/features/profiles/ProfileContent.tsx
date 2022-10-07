@@ -3,6 +3,7 @@ import React from 'react'
 import { Tab } from 'semantic-ui-react'
 import { Profile } from '../../app/models/profile';
 import { useStore } from '../../app/stores/store';
+import ProfileAbout from './ProfileAbout';
 import ProfileActivities from './ProfileActivities';
 import ProfileFollowings from './ProfileFollowings';
 import ProfilePhotos from './ProfilePhotos';
@@ -14,7 +15,7 @@ interface IProps {
 const ProfileContent = ({profile}: IProps) => {
     const {profileStore} = useStore();
     const panes = [
-        {menuItem: 'About', render: () => <Tab.Pane>About Content</Tab.Pane>},
+        {menuItem: 'About', render: () => <Tab.Pane><ProfileAbout /></Tab.Pane>},
         {menuItem: 'Photos', render: () => <ProfilePhotos profile={profile} />},
         {menuItem: 'Events', render: () => <ProfileActivities />},
         {menuItem: 'Followers', render: () => <ProfileFollowings />},

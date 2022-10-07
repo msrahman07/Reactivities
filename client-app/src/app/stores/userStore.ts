@@ -6,6 +6,7 @@ import { store } from "./store";
 
 export default class UserStore {
     user: User | null = null;
+    loading: boolean = false;
 
     constructor() {
         makeAutoObservable(this);
@@ -16,6 +17,7 @@ export default class UserStore {
     }
 
     login = async (creds: UserFormValues) => {
+        this.loading = true;
         try {
             const user = await agent.Account.login(creds);
             store.commonStore.setToken(user.token);
@@ -27,6 +29,8 @@ export default class UserStore {
         }
         catch (err) {
             throw err;
+        } finally {
+            runInAction(() => {this.loading = false;});
         }
     }
 
@@ -65,5 +69,8 @@ export default class UserStore {
         if(this.user){
             this.user.image = image;       
         }
+    }
+    setDisplayName = (name: string) => {
+        if (this.user) this.user.displayName = name;
     }
 }

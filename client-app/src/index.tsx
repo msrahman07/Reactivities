@@ -22,6 +22,7 @@ root.render(
     <HistoryRouter history={history}>
       <App />
     </HistoryRouter>
+    
   </StoreContext.Provider>
 );
 

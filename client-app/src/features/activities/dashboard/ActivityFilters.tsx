@@ -8,6 +8,7 @@ const ActivityFilters = () => {
     const {activityStore: {predicate, setPredicate}} = useStore();
     return (
         <>
+
             <Menu vertical size='large' style={{ width: '100%', marginTop: 27 }}>
                 <Header icon='filter' attached color='teal' content='Filters' />
                 <Menu.Item 
@@ -31,6 +32,7 @@ const ActivityFilters = () => {
                 onChange={(date:Date) => setPredicate('startDate', date as Date)}
                 value={predicate.get('startDate') || new Date()}
             />
+
         </>
 
     )

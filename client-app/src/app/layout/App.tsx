@@ -16,6 +16,8 @@ import { useStore } from '../stores/store';
 import LoadingComponent from './LoadingComponent';
 import ModalContainer from '../common/modals/ModalContainer';
 import ProfilePage from '../../features/profiles/ProfilePage';
+import RegisterForm from '../../features/users/RegisterForm';
+import PrivateRoute from './PrivateRoute';
 
 function App() {
   const location = useLocation();
@@ -44,16 +46,18 @@ function App() {
           <NavBar />
           <Container style={{ marginTop: '7em' }}>
             <Routes>
-                <Route path='activities' element={<ActivityDashboard />} />
-                <Route path='activities/:id' element={<ActivityDetails />} />
-                <Route path='createActivity' element={<ActivityForm key={location.key} />} />
-                <Route path='manage/:id' element={<ActivityForm key={location.key} />} />
-                <Route path='profiles/:username' element={<ProfilePage key={location.key} />} />
-                <Route path='errors' element={<TestErrors />} />
-                <Route path='/server-error' element={<ServerError />} />
+                <Route path='activities' element={<PrivateRoute><ActivityDashboard /></PrivateRoute>} />
+                <Route path='activities/:id' element={<PrivateRoute><ActivityDetails /></PrivateRoute>} />
+                <Route path='createActivity' element={<PrivateRoute><ActivityForm key={location.key} /></PrivateRoute>} />
+                <Route path='manage/:id' element={<PrivateRoute><ActivityForm key={location.key} /></PrivateRoute>} />
+                <Route path='profiles/:username' element={<PrivateRoute><ProfilePage key={location.key} /></PrivateRoute>} />
+                <Route path='errors' element={<PrivateRoute><TestErrors /></PrivateRoute>} />
+                <Route path='/server-error' element={<PrivateRoute><ServerError /></PrivateRoute>} />
                 <Route path='/login' element={<LoginForm />} />
+                <Route path='/register' element={<RegisterForm />} />
                 <Route path='*' element={<NotFound />} />
             </Routes>
+            {/* <ScrollRestoration /> */}
           </Container>
         </>
       }

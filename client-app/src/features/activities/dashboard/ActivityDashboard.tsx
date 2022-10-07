@@ -1,7 +1,6 @@
 import { observer } from 'mobx-react-lite';
-import React, { useEffect, useState } from 'react'
-import { Button, Grid, Loader } from 'semantic-ui-react'
-import LoadingComponent from '../../../app/layout/LoadingComponent';
+import React, { createRef, LegacyRef, useEffect, useRef, useState } from 'react'
+import { Grid, Loader, Ref, Sticky } from 'semantic-ui-react'
 import { PagingParams } from '../../../app/models/pagination';
 import { useStore } from '../../../app/stores/store';
 import ActivityFilters from './ActivityFilters';
@@ -27,12 +26,14 @@ const ActivityDashboard = () => {
         }
     }, [activityRegistry.size, loadActivities])
 
+    const contextRef = createRef<HTMLElement>();
 
     return (
         <Grid>
             <Grid.Column width="10">
                 {activityStore.loadingInitial && !loadingNext ? (
                     <>
+                        <ActivityListItemPlaceholder />
                         <ActivityListItemPlaceholder />
                         <ActivityListItemPlaceholder />
                     </>
@@ -46,16 +47,19 @@ const ActivityDashboard = () => {
                         <ActivityList />
                     </InfiniteScroll>
                 )}
-                
+
             </Grid.Column>
             <Grid.Column width="6">
-                <ActivityFilters />
+                <Sticky context={contextRef} styles={{ marginTop: '500px' }}>
+                    <ActivityFilters />
+                </Sticky>
             </Grid.Column>
             <Grid.Column width={10}>
                 <Loader active={loadingNext} />
             </Grid.Column>
-
         </Grid>
+
+
     )
 }
 

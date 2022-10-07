@@ -20,7 +20,7 @@ using Application.Photos;
 using API.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
-
+AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
 // Add services to the container.
  
 builder.Services.AddControllers(opt => 
@@ -33,7 +33,7 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddEndpointsApiExplorer();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<DataContext>(options => {
-    options.UseSqlite(connectionString);
+    options.UseNpgsql(connectionString);
 });
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options => 
@@ -116,6 +116,9 @@ if (app.Environment.IsDevelopment())
 // app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.UseCors("CorsPolicy");
 
 app.UseAuthentication();
@@ -124,6 +127,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<ChatHub>("/chat");
+app.MapFallbackToController("Index", "Fallback");
 
 
 // Creating Scope for automated DB creation ======================

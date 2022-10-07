@@ -15,12 +15,12 @@ export default class ModalStore {
         makeAutoObservable(this)
     }
 
-    openModal(content: JSX.Element) {
+    openModal = (content: JSX.Element) => {
         this.modal.open = true;
         this.modal.body = content;
     }
 
-    closeModal() {
+    closeModal = () => {
         this.modal.open = false;
         this.modal.body = null;
     }

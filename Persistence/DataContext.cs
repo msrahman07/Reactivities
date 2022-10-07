@@ -18,7 +18,7 @@ namespace Persistence
                 .AddJsonFile("appsettings.Development.json") //for development settings
                 .Build();
             var connectionString = configuration.GetConnectionString("DefaultConnection");
-            optionsBuilder.UseSqlite(connectionString);
+            optionsBuilder.UseNpgsql(connectionString);
         }
         public DbSet<Activity> Activities { get; set; } = null!;
         public DbSet<ActivityAttendee> ActivityAttendees { get; set; } = null!;

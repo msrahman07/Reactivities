@@ -12,7 +12,7 @@ const sleep = (delay: number) => {
         setTimeout(resolve, delay);
     });
 }
-axios.defaults.baseURL = 'http://localhost:5000/api';
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
 axios.interceptors.request.use(config => {
     const token = store.commonStore.token;
@@ -23,7 +23,7 @@ axios.interceptors.request.use(config => {
 })
 
 axios.interceptors.response.use(async (response) => {
-    await sleep(1000);
+    if(process.env.NODE_ENV === 'development') await sleep(1000);
     const pagination = response.headers['pagination'];
     if(pagination) {
         response.data = new PaginatedResult(response.data, JSON.parse(pagination));
@@ -103,6 +103,8 @@ const Profiles = {
     deletePhoto: (id: string) => requests.del(`/photos/${id}`),
     updateFollowing: (username: string) => requests.post(`/follow/${username}`,{}),
     listFollowing: (username: string, predicate: string) => requests.get<Profile[]>(`/follow/${username}?predicate=${predicate}`),
+    updateProfile: (profile: Partial<Profile>) => requests.put(`/profiles`,
+profile),
     listActivities: (username: string, predicate: string) => requests.get<UserActivity[]>(`/profiles/${username}/activities?predicate=${predicate}`),
 }
 
