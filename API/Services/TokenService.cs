@@ -10,13 +10,23 @@ namespace API.Services
     {
         public string CreateToken(AppUser user)
         {
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                //.AddJsonFile("appsettings.json")
-                .AddJsonFile("appsettings.Development.json") //for development settings
-                .Build();
-            var tokenKey = configuration["tokenKey"];
-            
+            var tokenKey = string.Empty;
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+            if(env == "Development")
+            {
+                var configuration = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    //.AddJsonFile("appsettings.json")
+                    .AddJsonFile("appsettings.Development.json") //for development settings
+                    .Build();
+                tokenKey = configuration["tokenKey"];
+            }
+            else
+            {
+                tokenKey = Environment.GetEnvironmentVariable("TokenKey");
+            }
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.UserName),
@@ -24,6 +34,7 @@ namespace API.Services
                 new Claim(ClaimTypes.Email, user.Email),
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
+
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor

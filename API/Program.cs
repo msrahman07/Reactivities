@@ -22,8 +22,8 @@ using API.SignalR;
 var builder = WebApplication.CreateBuilder(args);
 AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
 // Add services to the container.
- 
-builder.Services.AddControllers(opt => 
+
+builder.Services.AddControllers(opt =>
 {
     var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
     opt.Filters.Add(new AuthorizeFilter(policy));
@@ -31,12 +31,45 @@ builder.Services.AddControllers(opt =>
 builder.Services.AddFluentValidationAutoValidation();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<DataContext>(options => {
-    options.UseNpgsql(connectionString);
+
+builder.Services.AddDbContext<DataContext>(options =>
+{
+    var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+    string connStr;
+
+    // Depending on if in development or production, use either Heroku-provided
+    // connection string, or development connection string from env var.
+    if (env == "Development")
+    {
+        // Use connection string from file.
+        connStr = builder.Configuration.GetConnectionString("DefaultConnection");
+    }
+    else
+    {
+        // Use connection string provided at runtime by Heroku.
+        var connUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+        Console.WriteLine("connUrl: " + connUrl);
+        // Parse connection URL to connection string for Npgsql
+        connUrl = connUrl.Replace("postgres://", string.Empty);
+        
+        var pgUserInfo = connUrl.Split("@")[0];
+        var pgDbInfo = connUrl.Split("@")[1];
+        var pgUser = pgUserInfo.Split(":")[0];
+        var pgUserPass = pgUserInfo.Split(":")[1];
+        var pgHost = pgDbInfo.Split(":")[0];
+        var pgPort = pgDbInfo.Split(":")[1].Split("/")[0];
+        var pgDbName = pgDbInfo.Split("/")[1];
+
+        connStr = $"Server={pgHost};Port={pgPort};Database={pgDbName};User Id={pgUser};Password={pgUserPass};sslmode=Require;TrustServerCertificate=True;";
+    }
+
+    // Whether the connection string came from the local development configuration file
+    // or from the environment variable from Heroku, use it to set up your DbContext.
+    options.UseNpgsql(connStr);
 });
 builder.Services.AddSwaggerGen();
-builder.Services.AddCors(options => 
+builder.Services.AddCors(options =>
     {
         options.AddPolicy("CorsPolicy", policy =>
             {
@@ -44,7 +77,9 @@ builder.Services.AddCors(options =>
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials()
+                    // .SetIsOriginAllowed(origin => true)
                     .WithOrigins("http://localhost:3000");
+                    /*, "https://*.herokuapp.com/", "https://reactivities-aspnet.herokuapp.com"*/
 
             }
         );
@@ -52,13 +87,23 @@ builder.Services.AddCors(options =>
 );
 
 //Identity service ===============================
-builder.Services.AddIdentityCore<AppUser>(opt => {
+builder.Services.AddIdentityCore<AppUser>(opt =>
+{
     opt.Password.RequireNonAlphanumeric = false;
 })
 .AddEntityFrameworkStores<DataContext>()
 .AddSignInManager<SignInManager<AppUser>>();
 
-var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenKey"]));
+//var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenKey"]));
+SymmetricSecurityKey key;
+var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+if(env == "Development")
+{
+    key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenKey"]));
+}
+else{
+    key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("TokenKey")!));
+}
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(opt =>
@@ -74,9 +119,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             OnMessageReceived = context =>
             {
-                var accessToken =  context.Request.Query["access_token"];
+                var accessToken = context.Request.Query["access_token"];
                 var path = context.HttpContext.Request.Path;
-                if(!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chat"))
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chat"))
                 {
                     context.Token = accessToken;
                 }
