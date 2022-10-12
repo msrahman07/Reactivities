@@ -1,7 +1,8 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react'
+import { Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom'
-import { Container, Header, Segment, Image, Button } from 'semantic-ui-react'
+import { Header, Image, Button } from 'semantic-ui-react'
 import { useStore } from '../../app/stores/store';
 import DemoAppLogin from '../users/DemoAppLogin';
 import LoginForm from '../users/LoginForm';
@@ -11,8 +12,10 @@ const HomePage = () => {
   const { userStore, modalStore } = useStore();
 
   return (
-    <Segment inverted textAlign='center' vertical className='masthead'>
-      <Container text>
+    <div className='masthead'>
+
+    <Container >
+      <div className='flex-column justify-content-cente'>
         <Header as='h1' inverted>
           <Image size='massive' src='/assets/logo.png' alt='logo' style={{ marginBottom: 12 }} />
         </Header>
@@ -23,7 +26,6 @@ const HomePage = () => {
               Go to Activities!
             </Button>
           </>
-
         ) : (
           <>
             <DemoAppLogin />
@@ -35,9 +37,10 @@ const HomePage = () => {
             </Button>
           </>
         )}
-
-      </Container>
-    </Segment>
+      </div>
+    </Container>
+    </div>
+    
   )
 }
 

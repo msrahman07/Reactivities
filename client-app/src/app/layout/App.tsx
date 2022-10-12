@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Container } from 'semantic-ui-react';
-import NavBar from './NavBar';
+import NavBarMenu from './NavBar';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
 import { observer } from 'mobx-react-lite';
 import { Route, Routes, useLocation } from 'react-router-dom';
@@ -43,7 +43,7 @@ function App() {
         </Routes>
         :
         <>
-          <NavBar />
+          <NavBarMenu />
           <Container style={{ marginTop: '7em' }}>
             <Routes>
                 <Route path='activities' element={<PrivateRoute><ActivityDashboard /></PrivateRoute>} />

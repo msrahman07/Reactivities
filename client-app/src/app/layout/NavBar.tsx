@@ -1,36 +1,63 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react'
+import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
-import { Button, Container, Dropdown, Image, Menu } from 'semantic-ui-react'
+import { Button, Image } from 'semantic-ui-react'
 import { useStore } from '../stores/store';
+import { BoxArrowLeft, Person } from 'react-bootstrap-icons';
 
-const NavBar = () => {
-  const { userStore: {user, logout} } = useStore();
+const NavBarMenu = () => {
+  const { userStore: { user, logout } } = useStore();
   return (
-    <Menu inverted fixed="top">
-        <Container>
-            <Menu.Item as={NavLink} to='/' header>
-                <img src="/assets/logo.png" alt="logo" style={{marginRight: '10px'}}/>
-                Reactivities
-            </Menu.Item>
-            <Menu.Item as={NavLink} to='/activities' name='Activities'/>
-            <Menu.Item as={NavLink} to='/errors' name='Errors'/>
-            <Menu.Item>
-                <Button as={NavLink} to='/createActivity' positive content="Create Activity"/>
-            </Menu.Item>
-            <Menu.Item position='right' >
-              <Image src={user?.image || '/assets/user.png'} avatar spaced='right'/>
-              <Dropdown pointing='top left' text={user?.displayName}>
-                  <Dropdown.Menu>
-                    <Dropdown.Item as={Link} to={`/profiles/${user?.username}`} text='My Profile' icon='user' />
-                    <Dropdown.Item onClick={logout} text='Logout' icon='power' />                    
-                  </Dropdown.Menu>
-              </Dropdown>
-            </Menu.Item>
-        </Container>
-    </Menu>
+    <Navbar className='navBarMenu' expand="lg" fixed="top">
+      <Container style={{ marginTop: '5px' }}>
+        <Navbar.Brand as={NavLink} to='/' >
+          <img src="/assets/logo.png" alt="logo" style={{ marginRight: '10px', maxWidth: '40px' }} />
+          <span style={{ color: 'white' }}> Reactivities</span>
+        </Navbar.Brand>
+
+        <Navbar.Toggle aria-controls="navbarScroll" />
+        <Navbar.Collapse id="navbarScroll" >
+          <Nav
+            className="me-auto my-2 my-lg-0"
+            style={{ maxHeight: '100px' }}
+            navbarScroll
+            variant="pills"
+            
+          >
+            {/* <div className='nav-items'> */}
+            <Nav.Link as={NavLink} to='/activities' style={{ color: 'white' }}>Activities</Nav.Link>
+            
+          </Nav>
+          <Nav>
+            <NavDropdown title={
+              <>
+                <Image src={user?.image || '/assets/user.png'} avatar spaced='right' />
+                <span style={{ color: 'white' }}>{user?.displayName}</span>
+              </>
+
+            } id="navbarScrollingDropdown">
+              <NavDropdown.Item as={Link} to={`/profiles/${user?.username}`}><Person />{' '} My Profile</NavDropdown.Item>
+              <NavDropdown.Item onClick={logout}><BoxArrowLeft />
+                {' '} Logout
+              </NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item>
+                <Button as={NavLink} to='/createActivity' positive content="Create Activity" />
+
+              </NavDropdown.Item>
+            </NavDropdown>
+            {/* </div> */}
+
+          </Nav>
+        </Navbar.Collapse>
+
+
+
+      </Container>
+    </Navbar>
   )
 }
 
-export default observer(NavBar)
+export default observer(NavBarMenu)

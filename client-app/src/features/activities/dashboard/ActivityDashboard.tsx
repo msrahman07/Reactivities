@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
-import React, { createRef, LegacyRef, useEffect, useRef, useState } from 'react'
-import { Grid, Loader, Ref, Sticky } from 'semantic-ui-react'
+import React, { useEffect, useState } from 'react'
+import { Grid, Loader } from 'semantic-ui-react'
 import { PagingParams } from '../../../app/models/pagination';
 import { useStore } from '../../../app/stores/store';
 import ActivityFilters from './ActivityFilters';
@@ -26,7 +26,6 @@ const ActivityDashboard = () => {
         }
     }, [activityRegistry.size, loadActivities])
 
-    const contextRef = createRef<HTMLElement>();
 
     return (
         <Grid>
@@ -50,9 +49,7 @@ const ActivityDashboard = () => {
 
             </Grid.Column>
             <Grid.Column width="6">
-                <Sticky context={contextRef} styles={{ marginTop: '500px' }}>
                     <ActivityFilters />
-                </Sticky>
             </Grid.Column>
             <Grid.Column width={10}>
                 <Loader active={loadingNext} />
