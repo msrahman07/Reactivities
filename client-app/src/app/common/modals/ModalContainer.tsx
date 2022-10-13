@@ -1,12 +1,13 @@
 import { observer } from 'mobx-react-lite'
 import React from 'react'
+import { Container } from 'react-bootstrap';
 import { Modal } from 'semantic-ui-react';
 import { useStore } from '../../stores/store'
 
 const ModalContainer = () => {
     const { modalStore } = useStore();
     return (
-        <Modal open={modalStore.modal.open} onClose={modalStore.closeModal} size='mini'>
+        <Modal open={modalStore.modal.open} onClose={modalStore.closeModal} size='mini' dimmer='blurring'>
             <Modal.Content>
                 {modalStore.modal.body}
             </Modal.Content>

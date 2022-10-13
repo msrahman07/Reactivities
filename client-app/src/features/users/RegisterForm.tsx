@@ -24,7 +24,7 @@ const RegisterForm = () => {
     >
         {({handleSubmit, isSubmitting, errors, isValid, dirty}) => (
             <Form className='ui form error' onSubmit={handleSubmit}>
-                <Header as='h2' content='Login to Reactivities' color='teal' textAlign='center' />
+                <Header as='h2' content='Register for Reactivities' color='teal' textAlign='center' />
                 <CommonTextInput name='displayName' placeholder='Display Name'/>
                 <CommonTextInput name='username' placeholder='Username'/>
                 <CommonTextInput name='email' placeholder='email'/>

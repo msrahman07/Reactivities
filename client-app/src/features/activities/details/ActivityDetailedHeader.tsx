@@ -18,13 +18,22 @@ const activityImageTextStyle = {
     height: 'auto',
     color: 'white'
 };
+const activityImageTextStyleMobile = {
+    marginTop: '50px',
+    position: 'absolute',
+    bottom: '5%',
+    left: '5%',
+    width: '100%',
+    height: '130px',
+    color: 'white'
+};
 
 interface Props {
     activity: Activity
 }
 
 export default observer(function ActivityDetailedHeader({ activity }: Props) {
-    const { activityStore: { updateAttendance, loading, cancelActivityToggle } } = useStore();
+    const { activityStore: { updateAttendance, loading, cancelActivityToggle }, windowSizeStore:{windowSize} } = useStore();
     return (
         <Segment.Group>
             <Segment basic attached='top' style={{ padding: '0' }}>
@@ -33,7 +42,7 @@ export default observer(function ActivityDetailedHeader({ activity }: Props) {
                         ribbon color='red' content='Cancelled' />
                 }
                 <Image src={`/assets/categoryImages/${activity.category}.jpg`} fluid style={activityImageStyle} />
-                <Segment style={activityImageTextStyle} basic>
+                <Segment style={windowSize.width > 370 ? activityImageTextStyle : activityImageTextStyleMobile} basic>
                     <Item.Group>
                         <Item>
                             <Item.Content>

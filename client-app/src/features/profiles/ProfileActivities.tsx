@@ -14,7 +14,7 @@ const panes = [
 ]
 
 const ProfileActivities = () => {
-    const { profileStore } = useStore();
+    const { profileStore, windowSizeStore:{windowSize} } = useStore();
     const {
         loadUserActivities, profile,
         loadingActivities, userActivities
@@ -42,7 +42,7 @@ const ProfileActivities = () => {
                         onTabChange={(e, data) => handleTabChange(e, data)}
                     />
                     <br />
-                    <Card.Group itemsPerRow={4}>
+                    <Card.Group style={{height: '500px', overflow:'hidden', overflowY:'scroll'}} itemsPerRow={(windowSize.width >= 850) ? 2 : 1}>
                         {userActivities.map((activity: UserActivity) => (
                             <Card
                                 as={Link}

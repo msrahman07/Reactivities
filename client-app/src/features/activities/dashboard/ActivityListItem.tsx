@@ -1,32 +1,37 @@
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
-import { Button, Icon, Item, Label, Segment } from 'semantic-ui-react';
+import { Button, Divider, Icon, Image, Item, Label, Segment } from 'semantic-ui-react';
 import { Activity } from '../../../app/models/activity';
 import ActivityListItemAttendee from './ActivityListItemAttendee';
 
 interface IProps {
     activity: Activity
 }
+const activityImageStyle = {
+    filter: 'brightness(30%)',
+};
 
-const ActivityListItem = ({ activity }: IProps) => {    
+const ActivityListItem = ({ activity }: IProps) => {
     return (
         <Segment.Group>
-            <Segment>
+            <Segment style={{paddingLeft: '0',paddingTop: '0', paddingRight: '0'}}>
                 {activity.isCalcelled && (
-                    <Label 
-                        attached='top' 
-                        color='red' 
+                    <Label
+                        attached='top'
+                        color='red'
                         content='Cancelled'
-                        style={{textAlign: 'center'}}    
+                        style={{ textAlign: 'center' }}
                     />
                 )}
-                <Item.Group>
+                <Image src={`/assets/categoryImages/${activity.category}.jpg`} fluid style={activityImageStyle} />
+
+                <Item.Group style={{paddingLeft: '14px'}}>
                     <Item>
-                        <Item.Image 
-                            style={{marginBottom: 5}}
-                            size='tiny' circular src={activity.host?.image || '/assets/user.png'} />
                         <Item.Content>
                             <Item.Header as={Link} to={`/activities/${activity.id}`}>
+                                <Item.Image
+                                    style={{ marginBottom: 5 }}
+                                    size='mini' circular src={activity.host?.image || '/assets/user.png'} /> {'  '}
                                 {activity.title}
                             </Item.Header>
                             <Item.Description>Hosted by <Link to={`/profiles/${activity.host?.username}`}>{activity.host?.displayName}</Link></Item.Description>
@@ -55,11 +60,11 @@ const ActivityListItem = ({ activity }: IProps) => {
                 </span>
             </Segment>
             <Segment secondary>
-                <ActivityListItemAttendee attendees={activity.attendees!}/>
+                <ActivityListItemAttendee attendees={activity.attendees!} />
             </Segment>
             <Segment clearing>
                 <span>{activity.description}</span>
-                <Button 
+                <Button
                     as={Link}
                     to={`/activities/${activity.id}`}
                     color='teal'
