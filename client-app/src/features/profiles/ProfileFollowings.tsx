@@ -18,7 +18,7 @@ const ProfileFollowings = () => {
                         content={activeTab ===3 ? `People following ${profile?.displayName}` : `People ${profile?.displayName} is following`}/>
                 </Grid.Column>
                 <Grid.Column width={16}>
-                    <Card.Group style={{height: '200px', overflowY:'scroll'}} itemsPerRow={1} >
+                    <Card.Group style={{height: 'fit-content', maxHeight:'300px', overflowY:'scroll'}} itemsPerRow={1} >
                         {followings.map(profile => (
                             <ProfileMiniCard key={profile.username} profile={profile}/>
                         ))}

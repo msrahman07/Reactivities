@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Grid, Header } from 'semantic-ui-react'
+import { useStore } from '../../stores/store';
 import PhotoWidgetCropper from './PhotoWidgetCropper';
 import PhotoWidgetDropzone from './PhotoWidgetDropzone'
 
@@ -11,6 +12,7 @@ interface IProps {
 const PhotoUploadWidget = ({loading, uploadPhoto} : IProps) => {
     const [files, setFiles] = useState<any>([]);
     const [cropper, setCropper] = useState<Cropper>();
+    const {windowSizeStore:{windowSize}} = useStore();
 
     const onCrop = () => {
         if (cropper) {
@@ -26,19 +28,19 @@ const PhotoUploadWidget = ({loading, uploadPhoto} : IProps) => {
 
     return (
         <Grid>
-            <Grid.Column width={4}>
+            <Grid.Column width={(windowSize.width <= 1000) ? 16 : 4}>
                 <Header sub color='teal' content='Step 1 - Add Photo' />
                 <PhotoWidgetDropzone setFiles={setFiles} />
             </Grid.Column>
             <Grid.Column width={1} />
-            <Grid.Column width={4}>
+            <Grid.Column width={(windowSize.width <= 1000) ? 16 : 4}>
                 <Header sub color='teal' content='Step 2 - Resize image' />
                 {files && files.length > 0 && (
                     <PhotoWidgetCropper setCropper={setCropper} imagePreview={files[0].preview} />
                 )}
             </Grid.Column>
             <Grid.Column width={1} />
-            <Grid.Column width={4}>
+            <Grid.Column width={(windowSize.width <= 1000) ? 16 : 4}>
                 <Header sub color='teal' content='Step 3 - Preview and upload' />
                 {files && files.length > 0 &&
                     <>
