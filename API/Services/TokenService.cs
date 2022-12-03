@@ -24,7 +24,13 @@ namespace API.Services
             }
             else
             {
-                tokenKey = Environment.GetEnvironmentVariable("TokenKey");
+                // tokenKey = Environment.GetEnvironmentVariable("TokenKey");
+                var configuration = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    //.AddJsonFile("appsettings.json")
+                    .AddJsonFile("appsettings.json") //for development settings
+                    .Build();
+                tokenKey = configuration["tokenKey"];
             }
 
             var claims = new List<Claim>

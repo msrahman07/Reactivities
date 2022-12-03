@@ -44,12 +44,12 @@ const ProfilePhotos = ({ profile }: IProps) => {
                     {addPhotoMode ? (
                         <PhotoUploadWidget uploadPhoto={handlePhotoUpload} loading={uploading} />
                     ) : (
-                        <Card.Group itemsPerRow={5}>
+                        <Card.Group itemsPerRow={2}>
                             {profile.photos?.map(photo => (
-                                <Card>
-                                    <Image src={photo.url || '/assets/user.png'} />
+                                <Card key={photo.id}>
+                                    <Image fluid src={photo.url || '/assets/user.png'} />
                                     {isCurrentUser && (
-                                        <Button.Group fluid widths={2}>
+                                        <>
                                             <Button 
                                                 basic
                                                 color='green'
@@ -59,13 +59,14 @@ const ProfilePhotos = ({ profile }: IProps) => {
                                                 loading={target === 'main'+photo.id && loading}
                                                 onClick={(e) => {handleSetMainPhoto(photo, e)}}
                                             />
-                                            <Button basic color='red' icon='trash'
+                                            <Button
+                                                basic color='red' icon='trash'
                                                 name={photo.id}
                                                 loading={target === photo.id && loading}
                                                 disabled={photo.isMain}
                                                 onClick={(e) => {handleDeletePhoto(photo, e)}}
                                             />
-                                        </Button.Group>
+                                        </>
                                     )}
                                 </Card>
                             ))}

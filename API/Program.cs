@@ -48,20 +48,22 @@ builder.Services.AddDbContext<DataContext>(options =>
     else
     {
         // Use connection string provided at runtime by Heroku.
-        var connUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-        Console.WriteLine("connUrl: " + connUrl);
-        // Parse connection URL to connection string for Npgsql
-        connUrl = connUrl.Replace("postgres://", string.Empty);
+        // var connUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+        // Console.WriteLine("connUrl: " + connUrl);
+        // // Parse connection URL to connection string for Npgsql
+        // connUrl = connUrl.Replace("postgres://", string.Empty);
         
-        var pgUserInfo = connUrl.Split("@")[0];
-        var pgDbInfo = connUrl.Split("@")[1];
-        var pgUser = pgUserInfo.Split(":")[0];
-        var pgUserPass = pgUserInfo.Split(":")[1];
-        var pgHost = pgDbInfo.Split(":")[0];
-        var pgPort = pgDbInfo.Split(":")[1].Split("/")[0];
-        var pgDbName = pgDbInfo.Split("/")[1];
+        // var pgUserInfo = connUrl.Split("@")[0];
+        // var pgDbInfo = connUrl.Split("@")[1];
+        // var pgUser = pgUserInfo.Split(":")[0];
+        // var pgUserPass = pgUserInfo.Split(":")[1];
+        // var pgHost = pgDbInfo.Split(":")[0];
+        // var pgPort = pgDbInfo.Split(":")[1].Split("/")[0];
+        // var pgDbName = pgDbInfo.Split("/")[1];
 
-        connStr = $"Server={pgHost};Port={pgPort};Database={pgDbName};User Id={pgUser};Password={pgUserPass};sslmode=Require;TrustServerCertificate=True;";
+        // connStr = $"Server={pgHost};Port={pgPort};Database={pgDbName};User Id={pgUser};Password={pgUserPass};sslmode=Require;TrustServerCertificate=True;";
+        connStr = builder.Configuration.GetConnectionString("DefaultConnection");
+
     }
 
     // Whether the connection string came from the local development configuration file
@@ -102,7 +104,7 @@ if(env == "Development")
     key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenKey"]));
 }
 else{
-    key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("TokenKey")!));
+    key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenKey"]));
 }
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
